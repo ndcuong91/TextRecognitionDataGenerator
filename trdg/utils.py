@@ -11,7 +11,7 @@ def load_dict(lang):
 
     lang_dict = []
     with open(
-        os.path.join(os.path.dirname(__file__), "dicts", lang + ".txt"),
+        os.path.join(os.path.dirname(__file__), "corpus", lang + ".txt"),
         "r",
         encoding="utf8",
         errors="ignore",

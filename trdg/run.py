@@ -1,12 +1,10 @@
 import argparse
-import os, errno
-import sys
+import os, errno, sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import random as rnd
-import string
-import sys
+from datetime import datetime
 
 from tqdm import tqdm
 from trdg.string_generator import (
@@ -26,17 +24,27 @@ def margins(margin):
         return [int(margins[0])] * 4
     return [int(m) for m in margins]
 
+font_dir='fonts/msttcorefonts'
+num_data_generate = 2000
+name_format = 2 #0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + one file labels.txt
+height = 64
+num_thread = 4
+background_mode = 1  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
+background_dir='' #when background_mode =3
+corpus_file = 'Viet_4518_single'
+margin_val = (10, 5, 10, 5) #top,left,bottom,right
+tight_crop=False
+
+gen_time = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
+output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_23July/ss/viet_4518_single_corpus/corpus_' + str(num_data_generate) + '_' + gen_time
+#if not os.path.exists(output_dir):
+os.makedirs(output_dir)
+
 
 def parse_arguments():
-    """
-        Parse the command line arguments of the program.
-    """
-
-    parser = argparse.ArgumentParser(
-        description="Generate synthetic text data for text recognition."
-    )
+    parser = argparse.ArgumentParser(description="Generate synthetic text data for text recognition.")
     parser.add_argument(
-        "--output_dir", type=str, nargs="?", help="The output directory", default="out/"
+        "--output_dir", type=str, nargs="?", help="The output directory", default=output_dir
     )
     parser.add_argument(
         "-i",
@@ -52,7 +60,7 @@ def parse_arguments():
         type=str,
         nargs="?",
         help="The language to use, should be fr (French), en (English), es (Spanish), de (German), ar (Arabic), cn (Chinese), or hi (Hindi)",
-        default="en",
+        default=corpus_file,
     )
     parser.add_argument(
         "-c",
@@ -60,7 +68,7 @@ def parse_arguments():
         type=int,
         nargs="?",
         help="The number of images to be created.",
-        required=True,
+        default=num_data_generate,
     )
     parser.add_argument(
         "-rs",
@@ -111,7 +119,7 @@ def parse_arguments():
         type=int,
         nargs="?",
         help="Define the height of the produced images if horizontal, else the width",
-        default=32,
+        default=height,
     )
     parser.add_argument(
         "-t",
@@ -119,7 +127,7 @@ def parse_arguments():
         type=int,
         nargs="?",
         help="Define the number of thread to use for image generation",
-        default=1,
+        default=num_thread,
     )
     parser.add_argument(
         "-e",
@@ -172,7 +180,7 @@ def parse_arguments():
         type=int,
         nargs="?",
         help="Define what kind of background to use. 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image",
-        default=0,
+        default=background_mode,
     )
     parser.add_argument(
         "-hw",
@@ -185,7 +193,7 @@ def parse_arguments():
         "--name_format",
         type=int,
         help="Define how the produced files will be named. 0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + one file labels.txt containing id-to-label mappings",
-        default=0,
+        default=name_format,
     )
     parser.add_argument(
         "-om",
@@ -264,14 +272,14 @@ def parse_arguments():
         type=margins,
         nargs="?",
         help="Define the margins around the text when rendered. In pixels",
-        default=(5, 5, 5, 5),
+        default=margin_val
     )
     parser.add_argument(
         "-fi",
         "--fit",
         action="store_true",
         help="Apply a tight crop around the rendered text",
-        default=False,
+        default=tight_crop
     )
     parser.add_argument(
         "-ft", "--font", type=str, nargs="?", help="Define font to be used"
@@ -282,6 +290,7 @@ def parse_arguments():
         type=str,
         nargs="?",
         help="Define a font directory to be used",
+        default=font_dir
     )
     parser.add_argument(
         "-id",
@@ -289,7 +298,7 @@ def parse_arguments():
         type=str,
         nargs="?",
         help="Define an image directory to use when background is set to image",
-        default=os.path.join(os.path.split(os.path.realpath(__file__))[0], "images"),
+        default=background_dir
     )
     parser.add_argument(
         "-ca",
@@ -371,9 +380,9 @@ def main():
         )
         # Set a name format compatible with special characters automatically if they are used
         if args.include_symbols or True not in (
-            args.include_letters,
-            args.include_numbers,
-            args.include_symbols,
+                args.include_letters,
+                args.include_numbers,
+                args.include_symbols,
         ):
             args.name_format = 2
     else:
@@ -398,38 +407,38 @@ def main():
 
     p = Pool(args.thread_count)
     for _ in tqdm(
-        p.imap_unordered(
-            FakeTextDataGenerator.generate_from_tuple,
-            zip(
-                [i for i in range(0, string_count)],
-                strings,
-                [fonts[rnd.randrange(0, len(fonts))] for _ in range(0, string_count)],
-                [args.output_dir] * string_count,
-                [args.format] * string_count,
-                [args.extension] * string_count,
-                [args.skew_angle] * string_count,
-                [args.random_skew] * string_count,
-                [args.blur] * string_count,
-                [args.random_blur] * string_count,
-                [args.background] * string_count,
-                [args.distorsion] * string_count,
-                [args.distorsion_orientation] * string_count,
-                [args.handwritten] * string_count,
-                [args.name_format] * string_count,
-                [args.width] * string_count,
-                [args.alignment] * string_count,
-                [args.text_color] * string_count,
-                [args.orientation] * string_count,
-                [args.space_width] * string_count,
-                [args.character_spacing] * string_count,
-                [args.margins] * string_count,
-                [args.fit] * string_count,
-                [args.output_mask] * string_count,
-                [args.word_split] * string_count,
-                [args.image_dir] * string_count,
+            p.imap_unordered(
+                FakeTextDataGenerator.generate_from_tuple,
+                zip(
+                    [i for i in range(0, string_count)],
+                    strings,
+                    [fonts[rnd.randrange(0, len(fonts))] for _ in range(0, string_count)],
+                    [args.output_dir] * string_count,
+                    [args.format] * string_count,
+                    [args.extension] * string_count,
+                    [args.skew_angle] * string_count,
+                    [args.random_skew] * string_count,
+                    [args.blur] * string_count,
+                    [args.random_blur] * string_count,
+                    [args.background] * string_count,
+                    [args.distorsion] * string_count,
+                    [args.distorsion_orientation] * string_count,
+                    [args.handwritten] * string_count,
+                    [args.name_format] * string_count,
+                    [args.width] * string_count,
+                    [args.alignment] * string_count,
+                    [args.text_color] * string_count,
+                    [args.orientation] * string_count,
+                    [args.space_width] * string_count,
+                    [args.character_spacing] * string_count,
+                    [args.margins] * string_count,
+                    [args.fit] * string_count,
+                    [args.output_mask] * string_count,
+                    [args.word_split] * string_count,
+                    [args.image_dir] * string_count,
+                ),
             ),
-        ),
-        total=args.count,
+            total=args.count,
     ):
         pass
     p.terminate()
@@ -437,7 +446,7 @@ def main():
     if args.name_format == 2:
         # Create file with filename-to-label connections
         with open(
-            os.path.join(args.output_dir, "labels.txt"), "w", encoding="utf8"
+                os.path.join(args.output_dir, "labels.txt"), "w", encoding="utf8"
         ) as f:
             for i in range(string_count):
                 file_name = str(i) + "." + args.extension
