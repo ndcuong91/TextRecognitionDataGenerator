@@ -31,20 +31,15 @@ height = 64
 num_thread = 4
 background_mode = 1  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
 background_dir='' #when background_mode =3
-corpus_file = 'Viet_4518_single'
+corpus_file = 'Eval_corpus'
 margin_val = (10, 5, 10, 5) #top,left,bottom,right
 tight_crop=False
-
-gen_time = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
-output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_23July/ss/viet_4518_single_corpus/corpus_' + str(num_data_generate) + '_' + gen_time
-#if not os.path.exists(output_dir):
-os.makedirs(output_dir)
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate synthetic text data for text recognition.")
     parser.add_argument(
-        "--output_dir", type=str, nargs="?", help="The output directory", default=output_dir
+        "--output_dir", type=str, nargs="?", help="The output directory", default=''
     )
     parser.add_argument(
         "-i",
@@ -327,6 +322,13 @@ def main():
 
     # Argument parsing
     args = parse_arguments()
+    gen_time = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
+    output_dir = '/home/duycuong/PycharmProjects/dataset/ocr/train_data_29Feb_update_30Mar_13May_refined_13Aug/eval_vnmese2/eval_corpus/corpus_' + str(
+        args.count) + '_' + gen_time
+    # if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+    args.output_dir = output_dir
 
     # Create the directory if it does not exist.
     try:
