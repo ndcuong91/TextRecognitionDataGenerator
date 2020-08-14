@@ -24,22 +24,24 @@ def margins(margin):
         return [int(margins[0])] * 4
     return [int(m) for m in margins]
 
-font_dir='fonts/msttcorefonts'
-num_data_generate = 2000
-name_format = 2 #0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + one file labels.txt
+
+font_dir = 'fonts/msttcorefonts'
+num_data_generate = 200
+name_format = 2  # 0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + one file labels.txt
 height = 64
 num_thread = 4
-background_mode = 1  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
-background_dir='' #when background_mode =3
+background_mode = 3  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
+background_dir = 'images'  # when background_mode =3
 corpus_file = 'Eval_corpus'
-margin_val = (10, 5, 10, 5) #top,left,bottom,right
-tight_crop=False
+margin_val = (10, 5, 10, 5)  # top,left,bottom,right
+tight_crop = False
+output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_13Aug/synthetic_vnmese'
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate synthetic text data for text recognition.")
     parser.add_argument(
-        "--output_dir", type=str, nargs="?", help="The output directory", default=''
+        "--output_dir", type=str, nargs="?", help="The output directory", default=output_dir
     )
     parser.add_argument(
         "-i",
@@ -178,6 +180,13 @@ def parse_arguments():
         default=background_mode,
     )
     parser.add_argument(
+        "-rb",
+        "--random_background",
+        action="store_true",
+        help="When set, the background will be randomized between 0 and 3.",
+        default=False,
+    )
+    parser.add_argument(
         "-hw",
         "--handwritten",
         action="store_true",
@@ -204,6 +213,13 @@ def parse_arguments():
         nargs="?",
         help="Define a distorsion applied to the resulting image. 0: None (Default), 1: Sine wave, 2: Cosine wave, 3: Random",
         default=0,
+    )
+    parser.add_argument(
+        "-rd",
+        "--random_distorsion",
+        action="store_true",
+        help="When set, the distorsion will be randomized between 0 and 3.",
+        default=False,
     )
     parser.add_argument(
         "-do",
@@ -323,8 +339,7 @@ def main():
     # Argument parsing
     args = parse_arguments()
     gen_time = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
-    output_dir = '/home/duycuong/PycharmProjects/dataset/ocr/train_data_29Feb_update_30Mar_13May_refined_13Aug/eval_vnmese2/eval_corpus/corpus_' + str(
-        args.count) + '_' + gen_time
+    output_dir = os.path.join(args.output_dir ,gen_time + '_' + str(args.count))
     # if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
@@ -423,7 +438,9 @@ def main():
                     [args.blur] * string_count,
                     [args.random_blur] * string_count,
                     [args.background] * string_count,
+                    [args.random_background] * string_count,
                     [args.distorsion] * string_count,
+                    [args.random_distorsion] * string_count,
                     [args.distorsion_orientation] * string_count,
                     [args.handwritten] * string_count,
                     [args.name_format] * string_count,

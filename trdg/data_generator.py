@@ -22,36 +22,37 @@ class FakeTextDataGenerator(object):
 
     @classmethod
     def generate(
-        cls,
-        index,
-        text,
-        font,
-        out_dir,
-        size,
-        extension,
-        skewing_angle,
-        random_skew,
-        blur,
-        random_blur,
-        background_type,
-        distorsion_type,
-        distorsion_orientation,
-        is_handwritten,
-        name_format,
-        width,
-        alignment,
-        text_color,
-        orientation,
-        space_width,
-        character_spacing,
-        margins,
-        fit,
-        output_mask,
-        word_split,
-        image_dir,
+            cls,
+            index,
+            text,
+            font,
+            out_dir,
+            size,
+            extension,
+            skewing_angle,
+            random_skew,
+            blur,
+            random_blur,
+            background_type,
+            random_background,
+            distorsion_type,
+            random_distorsion,
+            distorsion_orientation,
+            is_handwritten,
+            name_format,
+            width,
+            alignment,
+            text_color,
+            orientation,
+            space_width,
+            character_spacing,
+            margins,
+            fit,
+            output_mask,
+            word_split,
+            image_dir,
     ):
-        image = None
-        print('\nfonts',font)
+        # print('\nfonts',font)
 
         margin_top, margin_left, margin_bottom, margin_right = margins
         horizontal_margin = margin_left + margin_right
@@ -89,6 +90,8 @@ class FakeTextDataGenerator(object):
         #############################
         # Apply distorsion to image #
         #############################
+        distorsion_type = distorsion_type if not random_distorsion else rnd.randint(0, 3)
+        print('distortion type', distorsion_type)
         if distorsion_type == 0:
             distorted_img = rotated_img  # Mind = blown
             distorted_mask = rotated_mask
@@ -150,6 +153,8 @@ class FakeTextDataGenerator(object):
         #############################
         # Generate background image #
         #############################
+        background_type = background_type if not random_background else rnd.randint(0, 3)
+        print('background_type', background_type)
         if background_type == 0:
             background_img = background_generator.gaussian_noise(
                 background_height, background_width
@@ -213,11 +218,11 @@ class FakeTextDataGenerator(object):
         #####################################
         # Generate name for resulting image #
         #####################################
-        base_name=os.path.basename(font)
+        base_name = os.path.basename(font)
         base_name = os.path.splitext(base_name)[0]
 
         if name_format == 0:
-            #image_name = "{}_{}.{}".format(text, str(index), extension)
+            # image_name = "{}_{}.{}".format(text, str(index), extension)
             image_name = "{}_{}.{}".format(base_name, str(index), extension)
             mask_name = "{}_{}_mask.png".format(text, str(index))
         elif name_format == 1:
@@ -235,7 +240,7 @@ class FakeTextDataGenerator(object):
         print(image_name)
         if out_dir is not None:
             final_image.convert("RGB").save(os.path.join(out_dir, image_name))
-            with open(os.path.join(out_dir, str(index).zfill(4)+'.txt'),'w', encoding='utf-8') as f:
+            with open(os.path.join(out_dir, str(index).zfill(4) + '.txt'), 'w', encoding='utf-8') as f:
                 f.write(text)
             if output_mask == 1:
                 final_mask.convert("RGB").save(os.path.join(out_dir, mask_name))

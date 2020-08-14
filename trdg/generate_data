@@ -1,9 +1,1 @@
-python3 run.py -c 2000 -b 0 -d 0 -bl 2 -rbl
-python3 run.py -c 8000 -b 0 -d 1 -bl 2 -rbl
-python3 run.py -c 2000 -b 0 -d 3 -bl 2 -rbl
-python3 run.py -c 1000 -b 1 -d 0 -bl 2 -rbl
-python3 run.py -c 1000 -b 1 -d 1 -bl 2 -rbl
-python3 run.py -c 1000 -b 1 -d 3 -bl 2 -rbl
-python3 run.py -c 1000 -b 2 -d 0 -bl 2 -rbl
-python3 run.py -c 1000 -b 2 -d 1 -bl 2 -rbl
-python3 run.py -c 1000 -b 2 -d 3 -bl 2 -rbl
+python run.py -c 200 -rd -rb
