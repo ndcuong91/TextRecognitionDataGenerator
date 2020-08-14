@@ -29,11 +29,11 @@ font_dir = 'fonts/msttcorefonts'
 num_data_generate = 200
 name_format = 2  # 0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + one file labels.txt
 height = 64
-num_thread = 4
+num_thread = 2
 background_mode = 3  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
 background_dir = 'images'  # when background_mode =3
 corpus_file = 'Eval_corpus'
-margin_val = (10, 5, 10, 5)  # top,left,bottom,right
+margin_val = (15, 15, 15, 15)  # top,left,bottom,right
 tight_crop = False
 output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_13Aug/synthetic_vnmese'
 
@@ -339,7 +339,7 @@ def main():
     # Argument parsing
     args = parse_arguments()
     gen_time = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
-    output_dir = os.path.join(args.output_dir ,gen_time + '_' + str(args.count))
+    output_dir = os.path.join(args.output_dir, args.language + '_' + str(args.count) + '_' + gen_time)
     # if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 

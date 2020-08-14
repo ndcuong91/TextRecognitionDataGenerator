@@ -55,6 +55,10 @@ class FakeTextDataGenerator(object):
         # print('\nfonts',font)
 
         margin_top, margin_left, margin_bottom, margin_right = margins
+        margin_top = rnd.randint(-10, margin_top)
+        margin_bottom = rnd.randint(-10, margin_bottom)
+        margin_left = rnd.randint(-8, margin_left)
+        margin_right = rnd.randint(-8, margin_right)
         horizontal_margin = margin_left + margin_right
         vertical_margin = margin_top + margin_bottom
 
@@ -91,7 +95,7 @@ class FakeTextDataGenerator(object):
         # Apply distorsion to image #
         #############################
         distorsion_type = distorsion_type if not random_distorsion else rnd.randint(0, 3)
-        print('distortion type', distorsion_type)
+        # print('distortion type', distorsion_type)
         if distorsion_type == 0:
             distorted_img = rotated_img  # Mind = blown
             distorted_mask = rotated_mask
@@ -154,7 +158,7 @@ class FakeTextDataGenerator(object):
         # Generate background image #
         #############################
         background_type = background_type if not random_background else rnd.randint(0, 3)
-        print('background_type', background_type)
+        # print('background_type', background_type)
         if background_type == 0:
             background_img = background_generator.gaussian_noise(
                 background_height, background_width

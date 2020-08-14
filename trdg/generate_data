@@ -1,1 +1,6 @@
-python run.py -c 200 -rd -rb
+python run.py -l English10k -c 100000 -rd -rb
+python run.py -l Viet_5944_single -c 100000 -rd -rb
+python run.py -l Viet_1474_no_accent -c 20000 -rd -rb
+python run.py -l random_number_1000 -c 4000 -rd -rb
+python run.py -l random_serial_1000 -c 4000 -rd -rb
+python run.py -l random_symbol_300 -c 2000 -rd -rb
