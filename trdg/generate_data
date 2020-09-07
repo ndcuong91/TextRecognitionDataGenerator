@@ -1,6 +1,6 @@
-python run.py -l English10k -c 100000 -rd -rb
-python run.py -l Viet_5944_single -c 100000 -rd -rb
-python run.py -l Viet_1474_no_accent -c 20000 -rd -rb
-python run.py -l random_number_1000 -c 4000 -rd -rb
-python run.py -l random_serial_1000 -c 4000 -rd -rb
-python run.py -l random_symbol_300 -c 2000 -rd -rb
+python run.py -l random_sevt_date_2000 -c 100
+#python run.py -l Viet_5944_single_triple -c 120000 -rb
+#python run.py -l Viet_1474_no_accent_triple -c 30000 -rb
+#python run.py -l random_number_5000 -c 10000 -rb
+#python run.py -l random_serial_5000 -c 10000 -rb
+#python run.py -l random_symbol_1000 -c 3000 -rb

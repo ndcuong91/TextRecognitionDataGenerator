@@ -53,12 +53,16 @@ class FakeTextDataGenerator(object):
             image_dir,
     ):
         # print('\nfonts',font)
+        min_margin_x=-7
+        if len(text)<3:
+            min_margin_x=0
+        min_margin_y=-10
 
         margin_top, margin_left, margin_bottom, margin_right = margins
-        margin_top = rnd.randint(-10, margin_top)
-        margin_bottom = rnd.randint(-10, margin_bottom)
-        margin_left = rnd.randint(-8, margin_left)
-        margin_right = rnd.randint(-8, margin_right)
+        margin_top = rnd.randint(min_margin_y, margin_top)
+        margin_bottom = rnd.randint(min_margin_y, margin_bottom)
+        margin_left = rnd.randint(min_margin_x, margin_left)
+        margin_right = rnd.randint(min_margin_x, margin_right)
         horizontal_margin = margin_left + margin_right
         vertical_margin = margin_top + margin_bottom
 

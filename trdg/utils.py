@@ -5,13 +5,13 @@ Utility functions
 import os
 
 
-def load_dict(lang):
+def load_dict(lang, corpus_dir='corpus'):
     """Read the dictionnary file and returns all words in it.
     """
 
     lang_dict = []
     with open(
-        os.path.join(os.path.dirname(__file__), "corpus", lang + ".txt"),
+        os.path.join(os.path.dirname(__file__), corpus_dir, lang + ".txt"),
         "r",
         encoding="utf8",
         errors="ignore",

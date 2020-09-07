@@ -52,7 +52,7 @@ def gen_random_serial_corpus(num_to_gen=1000, max_length=15):  # generate serial
     print("Done")
 
 
-def gen_random_number_corpus(num_to_gen=1000, max_length=12):  # generate number with/without dot or comma
+def gen_random_number_corpus(num_to_gen=1000, max_length=14):  # generate number with/without dot or comma
     print("gen_number_corpus", num_to_gen, max_length)
     final_text = ''
     for i in range(num_to_gen):
@@ -67,7 +67,7 @@ def gen_random_number_corpus(num_to_gen=1000, max_length=12):  # generate number
 
 def gen_random_symbol_corpus(num_to_gen=300, max_length=4):  # generate symbol
     print("gen_number_corpus", num_to_gen, max_length)
-    symbol_char = '*:,@$.-(#%\'\")/~!^&_+={}[]\;<>?※”'
+    symbol_char = '*:,@$.-(#%\'\")/~!^&_+={}[]\;<>?”'
     symbol_char_list = [x for x in symbol_char]
     final_text = ''
     for i in range(num_to_gen):
@@ -82,16 +82,17 @@ def gen_random_symbol_corpus(num_to_gen=300, max_length=4):  # generate symbol
 def gen_final_corpus(corpus_dir=''):
     print('corpus_utils.gen_final_corpus')
     file_list = [
-        'English10k.txt',
-        'Viet_4518_single.txt',
-        'Viet_1474_no_accent.txt',
-        'random_number_1000.txt',
-        'random_serial_1000.txt',
-        'random_symbol_300.txt'
+        #'#English10k.txt'
+        'English10k_triple.txt',
+        'Viet_1474_no_accent_triple.txt',
+        'Viet_5944_single_triple.txt',
+        'random_number_5000.txt',
+        'random_serial_5000.txt',
+        'random_symbol_1000.txt'
     ]
     final_corpus = []
     for file in file_list:
-        gen_triple = True
+        gen_triple = False
         if 'number' in file or 'symbol' in file:
             gen_triple = False
         all_text = open(os.path.join(corpus_dir, file), 'r', encoding='utf-8')
@@ -114,7 +115,7 @@ def gen_final_corpus(corpus_dir=''):
         print(count, corpus)
         final_str += corpus + '\n'
 
-    save_filename = os.path.join(corpus_dir, 'final_corpus_19May.txt')
+    save_filename = os.path.join(corpus_dir, 'Viet_Eng_corpus_2408.txt')
     print('Save corpus:', save_filename)
     with open(save_filename, "w", encoding='utf-8') as save_file:
         save_file.write(final_str)
@@ -204,7 +205,7 @@ def get_corpus_list_from_icdar_dataset(data_dir, corpus_dir=''):  # only word, n
         print(count, corpus)
         final_str += corpus + '\n'
 
-    save_filename = os.path.join(corpus_dir, 'Eval_corpus.txt')
+    save_filename = os.path.join(corpus_dir, 'Korea_english_corpus.txt')
     print('Save corpus:', save_filename)
     with open(save_filename, "w", encoding='utf-8') as save_file:
         save_file.write(final_str)
@@ -401,22 +402,26 @@ class InvoiceCorpus():  # nt.anh
 
 
 class SEVT_corpus:
-    def gen_rand(self, length=2, number_pecent=0.9):
+    #form 1
+    def gen_rand_serial(self, length=2, number_pecent=0.9, include_lowercase=False):
         result = ''
         for i in range(length):
             rand = random.randrange(1, 100)
             if rand < int(100 * number_pecent):
-                result += random.choice(string.digits + '00')
+                result += random.choice(string.digits)
             else:
-                result += random.choice(string.ascii_uppercase)
+                if include_lowercase:
+                    result += random.choice(string.ascii_uppercase+string.ascii_lowercase)
+                else:
+                    result += random.choice(string.ascii_uppercase)
         return result
 
     def gen_code(self, num_to_gen=1000):
         final_text = ''
         for i in range(num_to_gen):
-            first_part = self.gen_rand(2, 0.9)
+            first_part = self.gen_rand_serial(2, 0.9)
             second_part = list(random.choice(string.digits) for _ in range(2))
-            third_part = self.gen_rand(7, 0.95)
+            third_part = self.gen_rand_serial(7, 0.95)
             code = first_part + ''.join(second_part) + '-' + third_part
             final_text += code + '\n'
             print(code)
@@ -427,8 +432,8 @@ class SEVT_corpus:
         final_text = ''
         for i in range(num_to_gen):
             first_part = str(random.randrange(1, 100)).zfill(3)
-            second_part = self.gen_rand(5, 0.8)
-            third_part = self.gen_rand(4, 0.7)
+            second_part = self.gen_rand_serial(5, 0.8)
+            third_part = self.gen_rand_serial(4, 0.7)
             code = 'SMD_' + first_part + ' <' + second_part + '/' + third_part + '>'
             final_text += code + '\n'
             print(code)
@@ -442,10 +447,116 @@ class SEVT_corpus:
             with open("random_sevt_no_" + str(num_to_gen) + ".txt", "w") as save_file:
                 save_file.write(final_text)
 
+    #unplan
+    def gen_random_date(self, num_to_gen=1000):
+        print("gen_random_date", num_to_gen)
+        numb_date = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        final_text = ''
+        for i in range(num_to_gen):
+            year = random.randrange(2000, 2100)
+            month = random.randrange(1, 12)
+            date = random.randrange(1, numb_date[month - 1])
+            connect_list = ['/','-','\\','.']
+            connect = random.choice(connect_list)
+
+            len_date=random.choices([1,1,1,2,2,3])[0]
+            begin_date=max(1,date+1-len_date)
+            end_date=begin_date+len_date-1
+            date_value=''
+            for i in range(begin_date,end_date+1):
+                date_value += random.choice([str(i).zfill(2), str(i)])+'+'
+            date_value=date_value.rstrip('+')
+
+
+            month_value = random.choice([str(month).zfill(2), str(month)])
+            year_value = str(year)
+            include_year=random.choices([True,False])[0]
+            if include_year:
+                str_date = connect.join([date_value, month_value, year_value])
+            else:
+                str_date = connect.join([date_value, month_value])
+
+            final_text += str_date + '\n'
+        # print(final_text)
+        path_file = os.path.join("random_sevt_date_" + str(num_to_gen) + ".txt")
+        with open(path_file, "w") as save_file:
+            save_file.write(final_text)
+        print("Done")
+
+    def gen_model(self, num_to_gen=1000):
+        final_text = ''
+        for i in range(num_to_gen):
+            len_first_part=random.randrange(3,8)
+            first_part = self.gen_rand_serial(len_first_part, 0.6, include_lowercase=True)
+
+            connect= random.choices(['/','_'])[0]
+
+            len_second_part = random.randrange(2, 6)
+            second_candidates = self.gen_rand_serial(len_second_part, 0.6, include_lowercase=True)
+            second_part=random.choices([second_candidates,
+                                        second_candidates,
+                                              'master',
+                                              'MASTER',
+                                              'slave',
+                                              'SLAVE',
+                                        ])[0]
+            include_second_part=random.choices([True,False])[0]
+            if include_second_part:
+                model = first_part + connect + second_part
+            else:
+                model = first_part
+            final_text += model + '\n'
+            print(model)
+            with open("random_sevt_model_" + str(num_to_gen) + ".txt", "w") as save_file:
+                save_file.write(final_text)
+
+    def gen_LKDT_LKDB(self, num_to_gen=1000):
+        final_text = ''
+        for i in range(num_to_gen):
+            first_part = self.gen_rand_serial(2, 0.9)
+            second_part = list(random.choice(string.digits) for _ in range(2))
+            third_part = self.gen_rand_serial(7, 0.95)
+            code = first_part + ''.join(second_part) + '-' + third_part
+            final_code=random.choices([code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                        code,
+                                              'PCB trắng',
+                                              'Board 1 mặt',
+                                              'Board 2 mặt'
+                                        ])[0]
+            final_text += final_code + '\n'
+            print(code)
+            with open("random_sevt_LKDT_LKDB_" + str(num_to_gen) + ".txt", "w") as save_file:
+                save_file.write(final_text)
+
+    def gen_id(self, num_to_gen=999):
+        final_text = ''
+        for i in range(num_to_gen):
+
+            len=random.randrange(6,8)
+            id=''
+            for j in range(len):
+                id+=random.choice(string.digits)
+            final_text += id + '\n'
+            with open("random_sevt_id_" + str(num_to_gen) + ".txt", "w") as save_file:
+                save_file.write(final_text)
+
+
 if __name__ == "__main__":
-    invoice_gen = InvoiceCorpus()
-    # gen_final_corpus('')
-    sevt_gen = SEVT_corpus()
-    sevt_gen.gen_code(3000)
-    sevt_gen.gen_footer(3000)
-    sevt_gen.gen_no(999)
+    gen = SEVT_corpus()
+    #gen.gen_no(num_to_gen=999)
+    gen.gen_random_date(num_to_gen=3000)
+    #gen.gen_model(num_to_gen=1000)
+    #gen.gen_LKDT_LKDB(num_to_gen=10000)
+    #gen.gen_id(num_to_gen=1000)
+    #get_corpus_list_from_icdar_dataset('/data20.04/data/aicr/korea_test_set/korea_English_test/GT_word_icdar')

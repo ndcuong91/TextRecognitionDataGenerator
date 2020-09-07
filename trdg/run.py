@@ -11,8 +11,8 @@ from trdg.string_generator import (
     create_strings_from_dict,
     create_strings_from_file,
     create_strings_from_wikipedia,
-    create_strings_randomly,
-)
+    create_strings_randomly,)
+
 from trdg.utils import load_dict, load_fonts
 from trdg.data_generator import FakeTextDataGenerator
 from multiprocessing import Pool
@@ -26,16 +26,17 @@ def margins(margin):
 
 
 font_dir = 'fonts/msttcorefonts'
-num_data_generate = 200
+num_data_generate = 3000
 name_format = 2  # 0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + one file labels.txt
 height = 64
-num_thread = 2
+num_thread = 8
 background_mode = 3  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
-background_dir = 'images'  # when background_mode =3
-corpus_file = 'Eval_corpus'
-margin_val = (15, 15, 15, 15)  # top,left,bottom,right
+background_dir = 'images/sevt_unplan'  # when background_mode =3
+corpus_dir='corpus/sevt'
+corpus_file = 'random_sevt_date_3000'
+margin_val = (20, 15, 20, 15)  # top,left,bottom,right
 tight_crop = False
-output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_13Aug/synthetic_vnmese'
+output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_03Sep/sevt_unplan/synthetic'
 
 
 def parse_arguments():
@@ -361,7 +362,7 @@ def main():
         else:
             sys.exit("Cannot open dict")
     else:
-        lang_dict = load_dict(args.language)
+        lang_dict = load_dict(args.language, corpus_dir=corpus_dir)
 
     # Create font (path) list
     if args.font_dir:
