@@ -53,10 +53,10 @@ class FakeTextDataGenerator(object):
             image_dir,
     ):
         # print('\nfonts',font)
-        min_margin_x=-7
+        min_margin_x=-4
         if len(text)<3:
             min_margin_x=0
-        min_margin_y=-10
+        min_margin_y=-6
 
         margin_top, margin_left, margin_bottom, margin_right = margins
         margin_top = rnd.randint(min_margin_y, margin_top)
@@ -237,7 +237,7 @@ class FakeTextDataGenerator(object):
             image_name = "{}_{}.{}".format(str(index), text, extension)
             mask_name = "{}_{}_mask.png".format(str(index), text)
         elif name_format == 2:
-            image_name = "{}.{}".format(str(index).zfill(4), extension)
+            image_name = "{}.{}".format(str(index).zfill(7), extension)
             mask_name = "{}_mask.png".format(str(index))
         else:
             print("{} is not a valid name format. Using default.".format(name_format))
@@ -245,10 +245,10 @@ class FakeTextDataGenerator(object):
             mask_name = "{}_{}_mask.png".format(text, str(index))
 
         # Save the image
-        print(image_name)
+        # print(image_name)
         if out_dir is not None:
             final_image.convert("RGB").save(os.path.join(out_dir, image_name))
-            with open(os.path.join(out_dir, str(index).zfill(4) + '.txt'), 'w', encoding='utf-8') as f:
+            with open(os.path.join(out_dir, str(index).zfill(7) + '.txt'), 'w', encoding='utf-8') as f:
                 f.write(text)
             if output_mask == 1:
                 final_mask.convert("RGB").save(os.path.join(out_dir, mask_name))

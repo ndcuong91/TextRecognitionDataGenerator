@@ -1,4 +1,10 @@
-python run.py -l random_sevt_date_2000 -c 100
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 50000 -rb -rd -bl 0
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 50000 -rb -rd -bl 0
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 30000 -rb -rd -bl 1
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 30000 -rb -rd -bl 1
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 20000 -rb -rd -bl 2
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 10000 -rb -rd -bl 3
+python run.py -l final_corpus_general_words_vnmese_15Sep -c 10000 -rb -rd -bl 4
 #python run.py -l Viet_5944_single_triple -c 120000 -rb
 #python run.py -l Viet_1474_no_accent_triple -c 30000 -rb
 #python run.py -l random_number_5000 -c 10000 -rb

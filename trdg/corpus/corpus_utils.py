@@ -143,15 +143,27 @@ def get_corpus(corpus_file, percentage=1.0, shuffle=True):
     return final_txt
 
 
-def gen_final_corpus2(corpus_dir='', file_list=[]):
+def gen_final_corpus2(corpus_dir=''):
     print('corpus_utils.gen_final_corpus')
     file_list = [
-        ('random_invoice_form_3000.txt', 1.0),
-        ('random_invoice_serial_3000.txt', 1.0),
-        ('random_invoice_taxcode_3000.txt', 1.0)
+        ('Công nghệ_words.txt', 0.2),
+        ('Đời sống_words.txt', 0.2),
+        ('Giải trí_words.txt', 0.2),
+        ('Giáo dục_words.txt', 0.2),
+        ('Khoa học_words.txt', 0.2),
+        ('Kinh tế_words.txt', 0.2),
+        ('Nhà đất_words.txt', 0.2),
+        ('None_words.txt', 0.2),
+        ('Pháp luật_words.txt', 0.2),
+        ('Thế giới_words.txt', 0.2),
+        ('Thể thao_words.txt', 0.2),
+        ('Văn hóa_words.txt', 0.2),
+        ('Xã hội_words.txt', 0.2),
+        ('Xe cộ_words.txt', 0.2)
     ]
     final_corpus = []
     for file in file_list:
+        print(file)
         file_corpus = get_corpus(os.path.join(corpus_dir, file[0]), percentage=file[1])
         final_corpus.extend(file_corpus)
 
@@ -163,7 +175,7 @@ def gen_final_corpus2(corpus_dir='', file_list=[]):
         print(count, corpus)
         final_str += corpus + '\n'
 
-    save_filename = os.path.join(corpus_dir, 'final_corpus_13May.txt')
+    save_filename = os.path.join(corpus_dir, 'final_corpus_general_words_vnmese_15Sep.txt')
     print('Save corpus:', save_filename)
     with open(save_filename, "w", encoding='utf-8') as save_file:
         save_file.write(final_str)
@@ -551,11 +563,77 @@ class SEVT_corpus:
             with open("random_sevt_id_" + str(num_to_gen) + ".txt", "w") as save_file:
                 save_file.write(final_text)
 
+def split_word(line):
+    line = line.rstrip('\n')
+    words = line.split(' ')
+    curr = 0
+    separate = []
+    while (curr < len(words)):
+        prob = random.randrange(1, 11)
+        if prob <= 6:  # len 1
+            val = 1
+        elif prob <= 9:  # len 2
+            val = 2
+        else:  # len 3
+            val = 3
+        if (curr + val > len(words)):
+            val = len(words) - curr
+        separate.append(val)
+        curr += val
+    #print(sum(separate), len(words))
+    final_list = []
+    start_idx = 0
+    for l in separate:
+        end_idx = start_idx + l
+        sub_str_list = words[start_idx:end_idx]
+        start_idx = end_idx
+        word = ' '.join(sub_str_list)
+        final_list.append(word)
+
+    return final_list
+
+def shorten_corpus(corpus_dir, corpus_shorten_dir, short_size=100000):
+    print('shorten_corpus.',corpus_dir)
+    list_file = get_list_file_in_folder(corpus_dir, '.txt')
+    for file in list_file:
+        print(file)
+        anno_path = os.path.join(corpus_dir, file)
+        with open(anno_path, "r", encoding='utf-8') as f:
+            anno_list = f.readlines()
+        random.shuffle(anno_list)
+        anno_list_short = anno_list[0: min(short_size,len(anno_list))]
+        saved_txt = ''.join(anno_list_short)
+        saved_txt = saved_txt.rstrip('\n')
+        with open(os.path.join(corpus_shorten_dir, file), "w", encoding='utf-8') as save_file:
+            save_file.write(saved_txt)
+
+def filter_words_from_corpus(corpus_dir, probs=[6,3,1]):
+    list_file = get_list_file_in_folder(corpus_dir, '.txt')
+    for file in list_file:
+        print(file)
+        final_words=[]
+        anno_path = os.path.join(corpus_dir, file)
+        with open(anno_path, "r", encoding='utf-8') as f:
+            anno_list = f.readlines()
+        for txt in anno_list:
+            res= split_word(txt)
+            final_words.extend(res)
+        final_text = '\n'.join(final_words)
+        print('filter_words_from_corpus. len of final words list',len(final_words))
+
+        with open(anno_path.replace('.txt', '_words.txt'), "w", encoding='utf-8') as save_file:
+            save_file.write(final_text)
+
 
 if __name__ == "__main__":
-    gen = SEVT_corpus()
+    corpus_dir = '/home/duycuong/PycharmProjects/dataset/news-corpus-categorys-20181217/corpus'
+    corpus_shorten_dir = '/home/duycuong/PycharmProjects/dataset/news-corpus-categorys-20181217/corpus_short'
+    #shorten_corpus(corpus_dir,corpus_shorten_dir)
+    #filter_words_from_corpus(corpus_shorten_dir)
+    gen_final_corpus2(corpus_dir='/home/duycuong/PycharmProjects/dataset/news-corpus-categorys-20181217/corpus_short_words')
+    #gen = SEVT_corpus()
     #gen.gen_no(num_to_gen=999)
-    gen.gen_random_date(num_to_gen=3000)
+    #gen.gen_random_date(num_to_gen=3000)
     #gen.gen_model(num_to_gen=1000)
     #gen.gen_LKDT_LKDB(num_to_gen=10000)
     #gen.gen_id(num_to_gen=1000)

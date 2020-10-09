@@ -31,12 +31,12 @@ name_format = 2  # 0: [TEXT]_[ID].[EXT], 1: [ID]_[TEXT].[EXT] 2: [ID].[EXT] + on
 height = 64
 num_thread = 8
 background_mode = 3  # 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Image
-background_dir = 'images/sevt_unplan'  # when background_mode =3
-corpus_dir='corpus/sevt'
+background_dir = 'images/general_scan_bgr'  # when background_mode =3
+corpus_dir='corpus'
 corpus_file = 'random_sevt_date_3000'
-margin_val = (20, 15, 20, 15)  # top,left,bottom,right
+margin_val = (8, 5, 8, 5)  # top,left,bottom,right
 tight_crop = False
-output_dir = '/data20.04/data/aicr/train_data_29Feb_update_30Mar_13May_refined_03Sep/sevt_unplan/synthetic'
+output_dir = '/data20.04/data/aicr/synthetic_general_words_vnmese'
 
 
 def parse_arguments():
